@@ -106,7 +106,7 @@ class WaitForConfirm(Waiter):
 
 
 class LedRing():
-    commands = {
+    COMMANDS = {
         "full": b'\x00',
         "color": b'\x01',
         "pos": b'\x02',
@@ -128,8 +128,8 @@ class LedRing():
         "gamma_off": b'\x12',
     }
 
-    c_request = b'\x01'
-    c_received_command = b'\x02'
+    REQUEST = b'\x01'
+    RECEIVED_COMMAND = b'\x02'
 
     def __init__(self, serial, addr, addr_long):
         self.frame_consumer = FrameConsumer()
@@ -139,7 +139,7 @@ class LedRing():
         self.frame_cycle = itertools.cycle(range(1, 255))
 
     def _tx(self, command, data=None):
-        cmd = self.commands[command]
+        cmd = self.COMMANDS[command]
         if not data is None:
             cmd = cmd + data
 
@@ -148,7 +148,7 @@ class LedRing():
             self.addr_long)
 
         wait_response = WaitForResponse(self.frame_consumer, 60, frame_id)
-        wait_confirm = WaitForConfirm(self.frame_consumer, 60, self.c_received_command + self.commands[command])
+        wait_confirm = WaitForConfirm(self.frame_consumer, 60, self.RECEIVED_COMMAND + self.COMMANDS[command])
 
         wait_confirm.start()
         wait_response.start()
