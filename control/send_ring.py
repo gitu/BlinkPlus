@@ -35,6 +35,8 @@ class View():
         led_ring.gamma_off()
         led_ring.set_colors(colors)
         led_ring.set_fade(fades)
+        led_ring.rotate_off()
+        led_ring.set_position(0)
 
 
 def gen_random_view(size):
@@ -61,6 +63,8 @@ class InitializedObserver():
         self.led.fade_off()
         self.led.gamma_off()
         self.led.rotate_off()
+        led_ring.rotate_off()
+        led_ring.set_position(0)
         self.led.set_brightness(self.brightness)
 
     def receive_frame(self, frame):
@@ -79,6 +83,10 @@ if __name__ == "__main__":
         led_ring = LedRing(xbee_serial, b'\xff\xfe', device["EP2"])
         observer = InitializedObserver(led_ring, 30)
         led_ring.frame_consumer.attach(observer)
+        try:
+            observer.send_init_frames()
+        except:
+            print "silent init error"
 
         while 1:
             try:
